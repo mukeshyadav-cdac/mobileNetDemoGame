@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <style type="text/css">
+    body {
+      background: #000000;
+      padding: 0px;
+      margin: 0px;
+    }
+
+    canvas {
+      display: block;
+      margin: 0;
+      position: absolute;
+      top: 0%;
+      left: 0%;
+    }
+
+    video {
+      display: block;
+      margin: 0;
+      position: absolute;
+      top: 0%;
+      right: 0%;
+      z-index: 1000;
+    }
+
+    button {
+      display: block;
+      margin: 0;
+      position: absolute;
+      top: 0%;
+      right: 0%;
+      z-index: 2000;
+    }
+
+    #class-a {
+      right: 35%;
+    }
+
+    #class-b {
+      right: 25%;
+    }
+  </style>
+  <script src="phaser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/knn-classifier"></script>
+
+</head>
+
+<body>
+  <button id="class-a">Train Pose A</button>
+  <button id="class-b">Train Pose B</button>
+  <video autoplay playsinline muted id="webcam" width="224" height="224"></video>
+  <script src="exergame.js"></script>
+
+</body>
+
+</html>
