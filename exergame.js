@@ -43,12 +43,20 @@ class playGame extends Phaser.Scene {
 
   create() {
 
+    this.text = this.add.text(20, 30, "Game Frame Rate: ", {
+      font: "20px Arial",
+      fill: "#ff0044",
+      align: "center"
+    });
+
     // group with all active platforms.
     this.enemyGroup = this.add.group({
       removeCallback: function (enemy) {
         enemy.scene.enemyPool.add(enemy);
       }
     })
+
+    this.time.addEvent({ delay: 1000, callback: this.updateFrame, callbackScope: this, loop: true });
 
     this.enemyPool = this.add.group({
       removeCallback: function (enemy) {
@@ -59,6 +67,9 @@ class playGame extends Phaser.Scene {
     // number of consecutive jumps made by the player
     this.playerJumps = 0;
     this.coolPeiod = 0;
+    this.phaserTimeStampPrivious = Date.now();
+    this.deltaTime = Date.now();
+
 
     // adding a platform to the game, the arguments are platform width and x position
     this.platform = this.physics.add.sprite(game.config.width / 2, game.config.height, "platform");
@@ -114,19 +125,27 @@ class playGame extends Phaser.Scene {
 
   update() {
     //    recycling platforms
-    this.enemyGroup.getChildren().forEach(function (enemy) {
-      if (enemy.x < 0) {
-        this.enemyGroup.killAndHide(enemy);
-        this.enemyGroup.remove(enemy);
-      }
-    }, this);
+    this.phaserTimeStamp =
+      this.enemyGroup.getChildren().forEach(function (enemy) {
+        if (enemy.x < 0) {
+          this.enemyGroup.killAndHide(enemy);
+          this.enemyGroup.remove(enemy);
+        }
+      }, this);
 
     // adding new platforms
     let dTime = new Date();
     if (this.obstacleRate < dTime.getTime()) {
       this.addEnemy(game.config.width + 50);
     }
+    this.deltaTime = Date.now() - this.phaserTimeStampPrivious;
+    this.phaserTimeStampPrivious = Date.now();
   }
+
+  updateFrame() {
+    this.text.setText("Game Frame Rate: " + parseInt(1000 / this.deltaTime));
+  }
+
 };
 
 const webcamElement = document.getElementById('webcam');
@@ -134,11 +153,11 @@ const webcamElement = document.getElementById('webcam');
 let net;
 
 async function app() {
+
   console.log('Loading mobilenet..');
   // Load the model.
   net = await mobilenet.load();
   console.log('Successfully loaded model');
-
   const webcam = await tf.data.webcam(webcamElement);
   const addExample = async classId => {
     // Capture an image from the web camera.
